@@ -41,11 +41,13 @@ export default function VerifyPage() {
     setResult(null)
 
     try {
+      const code = verificationCode.trim().toUpperCase()
       const response = await fetch('/api/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          verificationCode: verificationCode.trim().toUpperCase(),
+          verificationCode: code,
+          certificateNo: code,  // Also search by certificate number
           organization 
         })
       })
@@ -139,14 +141,13 @@ export default function VerifyPage() {
                   id="code"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
-                  placeholder="Enter 9-character code (e.g., ABC123XYZ)"
+                  placeholder="Enter verification code (e.g., ABC123XYZ or USL-2023-00099)"
                   className="w-full px-4 py-4 text-lg font-mono tracking-wider border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  maxLength={9}
                 />
                 <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
               </div>
               <p className="mt-2 text-sm text-gray-500">
-                The verification code is printed on the certificate or can be scanned from the QR code.
+                Enter the verification code or certificate number printed on the certificate.
               </p>
             </div>
 

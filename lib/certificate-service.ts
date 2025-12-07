@@ -216,10 +216,19 @@ export class CertificateService {
     verifierInfo?: { ip?: string; agent?: string; org?: string }
   ): Promise<VerifyCertificateResult> {
     try {
+      // Search by either verificationCode OR certificateNo
+      const searchConditions = []
+      if (query.verificationCode) {
+        searchConditions.push({ verificationCode: query.verificationCode })
+      }
+      if (query.certificateNo) {
+        searchConditions.push({ certificateNo: query.certificateNo })
+      }
+      
       const certificate = await prisma.certificate.findFirst({
-        where: query.verificationCode 
-          ? { verificationCode: query.verificationCode }
-          : { certificateNo: query.certificateNo },
+        where: searchConditions.length > 1 
+          ? { OR: searchConditions }
+          : searchConditions[0],
         include: {
           institution: true
         }
